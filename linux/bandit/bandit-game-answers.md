@@ -3,8 +3,11 @@
 
 
 ## Bandit Level 0 ---> Level 1 answer
+Level Goal
 
+The password for the next level is stored in a file called readme located in the home directory. Use this password to log into bandit1 using SSH. Whenever you find a password for a level, use SSH (on port 2220) to log into that level and continue the game.
 
+**Solution:**
  ```bash
 
 bandit0@bandit:~$ ls
@@ -19,6 +22,10 @@ contribute to the OverTheWire community so we can keep these games free!
 The password you are looking for is: 6y2kwnwK6grgvwvpvLaa2T1cpFEKOhNR
 
 ```
+**Explanation:**
+
+**Password:**[6y2kwnwK6grgvwvpvLaa2T1cpFEKOhNR]
+**What I learned:**
 
 ## Bandit Level 1 ---> Level 2
 Level Goal
@@ -262,7 +269,24 @@ find: ‘./var/lib/snapd/void’: Permission denied
 find: ‘./var/lib/chrony’: Permission denied
 ./var/lib/dpkg/info/bandit7.password
 bandit6@bandit:/$ cat ./var/lib/dpkg/info/bandit7.password
+Bmnnvf82KzQlfxgAI2d1zYbr1u9pr3E3
 
+```
+**Explanation:**
+
+**Password:** [Bmnnvf82KzQlfxgAI2d1zYbr1u9pr3E3]
+**What I learned:**
+
+## Level 7 → Level 8
+Level Goal
+
+The password for the next level is stored in the file data.txt next to the word millionth
+
+**Solution**
+```bash
+bandit7@bandit:~$ cat data.txt | grep millionth 
+millionth	VR1ljMayciFxbnUokuQmJFw6QC9VKtub
+bandit7@bandit:~$ exit
 ```
 **Explanation:**
 

@@ -303,6 +303,7 @@ bandit8@bandit:~$ cat data.txt | sort | uniq -u
 ```
 **Explanation:**
 **Password:** [EjmOSvuAu7sGAHqHVcBDPirRe9T03kxl] 
+
 **What I learned:**
 - first i tried cat data.txt | sort | uniq -c
 - I learnt to swap the -c for -u, as this will print lines that aren't repeated 

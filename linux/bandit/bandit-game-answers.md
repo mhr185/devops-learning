@@ -379,3 +379,63 @@ data.txt contains text encoded with ROT13, where every letter is shifted 13 plac
 - My first working attempt only rotated lowercase letters, so "Ghe" came out half decoded. Adding the uppercase alphabet to both sets fixed it.
 - A cleaner way is to use ranges instead of typing out every letter: tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt. It does exactly the same job, and the redirect removes the need for cat.
 - ROT13 is its own inverse. Running the same command again re-encodes the text, because rotating by 13 twice gets you back to the start (26 letters).
+
+## Bandit Level 12 → Level 13
+
+Level Goal
+The password for the next level is stored in the file data.txt, which is a hexdump of a file that has been repeatedly compressed. For this level it may be useful to create a directory under /tmp in which you can work. Use mkdir with a hard to guess directory name. Or better, use the command "mktemp -d". Then copy the datafile using cp, and rename it using mv (read the manpages!)
+
+**Solution**
+
+```bash
+bandit12@bandit:~$ mktemp -d
+bandit12@bandit:~$ cp --copy-contents data.txt /tmp/tmp.LP5uW9x79V/dat.txt
+bandit12@bandit:~$ cd /tmp/tmp.LP5uW9x79V/
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ mv dat.txt data.txt
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ xxd -r data.txt > data1.txt
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data1.txt                # gzip
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data1.txt data1.gz
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ gzip -d data1.gz
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data1                    # bzip2
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data1 data2.bz2
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ bzip2 -d data2.bz2
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data2                    # gzip
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data2 data4.gz
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ gzip -d data4.gz
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data4                    # tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data4 data5.tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ tar -xvf data5.tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data5.bin                # tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data5.bin data6.tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ tar -xvf data6.tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data6.bin                # bzip2
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data6.bin data7.bz2
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ bzip2 -d data7.bz2
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data7                    # tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data7 data8.tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ tar -xvf data8.tar
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data8.bin                # gzip
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cp data8.bin data9.gz
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ gzip -d data9.gz
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ file data9                    # ASCII text
+bandit12@bandit:/tmp/tmp.LP5uW9x79V$ cat data9
+```
+
+**Explanation:**
+
+data.txt is a hexdump, so the first step is turning it back into the original binary with xxd -r. From there it's a loop: run file to find out what compression format the current file uses, give it the extension that format expects, then decompress it with the matching tool (gzip -d, bzip2 -d or tar -xvf). After eight layers of gzip, bzip2 and tar, file finally reports ASCII text, which contains the password.
+
+**Password:** [qQYQiHOBPR8zR61qxYqX45quvihF2uzk]
+
+**What I learned:**
+
+- First I kept running hexdump -C on the file and saving the output to new files, which just made a hexdump of a hexdump and got bigger each time. data.txt was already a hexdump, so I needed to go backwards, not forwards.
+- xxd -r reverses a hexdump back into the original binary file.
+- file identifies a file's real type from its contents, regardless of its name or extension. It was the key to knowing which tool to use at each step.
+- gzip -d insists on a .gz extension and refuses to decompress a file without one. That's why each file needed renaming before decompressing.
+- bzip2 -d won't overwrite a file that already exists. I got stuck for a while because decompressing data1.bz2 tried to create data1, which was already there. Using a new name (data2.bz2) fixed it.
+- bzip2 -z compresses rather than decompresses. I used it by mistake while trying to fix the overwrite problem.
+- tar -xvf extracts an archive: x for extract, v for verbose (lists the files), f for the archive file. Unlike gzip and bzip2, tar archives can contain files with any name, like data5.bin, so I had to check the output to see what came out.
+- cp data1 > data2.bz2 doesn't work. cp takes a source and a destination as arguments, not a redirect.
+- mktemp -d creates a uniquely named temporary directory, which keeps the work separate and tidy. cp --copy-contents wasn't needed here; plain cp works.
+- A cleaner way is to use mv instead of cp at each step, so files get renamed rather than copied and the directory doesn't fill up. For example: mv data1 data1.bz2 then bzip2 -d data1.bz2.

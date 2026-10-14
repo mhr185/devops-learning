@@ -332,3 +332,25 @@ strings extracts the readable text from a binary file, so piping it into grep gi
 - Searching for a single = matched lots of random noise. Making the pattern stricter (== or more) filtered it down to just the lines I wanted. 
 - With grep -E (extended regex), {3,} means “3 or more of the previous character”. Other quantifiers: {3} means exactly 3, + means 1 or more, * means 0 or more, and ? means 0 or 1.
 
+## Bandit Level 10 → Level 11
+
+Level Goal
+The password for the next level is stored in the file data.txt, which contains base64 encoded data.
+
+**Solution**
+
+```bash
+bandit10@bandit:~$ base64 -d data.txt
+```
+**Explanation:**
+
+data.txt holds a single line of base64-encoded text. base64 -d decodes it back to plain text, which reveals the password.
+
+**Password:** [pYfOY6HwUsDj5rL9UvyhU7MCmv8vN5Ro]
+
+**What I learned:**
+
+- First I used cat data.txt to look at the contents. It was a single string of letters, numbers, and = signs, which is typical of base64.
+- base64 -d decodes base64 data, and base64 with no flag encodes it. It can read a file directly, so cat isn’t needed.
+- The == at the end of base64 is padding. It fills the output to the right length and is a quick way to spot base64.
+- Base64 is encoding, not encryption. Anyone can reverse it with no key, so it should never be used to hide secrets. It’s commonly used to send binary data through text-only systems, such as email attachments, data in    URLs, and Kubernetes secrets.

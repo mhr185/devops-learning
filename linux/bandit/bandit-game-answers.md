@@ -354,3 +354,28 @@ data.txt holds a single line of base64-encoded text. base64 -d decodes it back t
 - base64 -d decodes base64 data, and base64 with no flag encodes it. It can read a file directly, so cat isn’t needed.
 - The == at the end of base64 is padding. It fills the output to the right length and is a quick way to spot base64.
 - Base64 is encoding, not encryption. Anyone can reverse it with no key, so it should never be used to hide secrets. It’s commonly used to send binary data through text-only systems, such as email attachments, data in    URLs, and Kubernetes secrets.
+
+## Bandit Level 11 → Level 12
+
+Level Goal
+The password for the next level is stored in the file data.txt, where all lowercase (a-z) and uppercase (A-Z) letters have been rotated by 13 positions.
+
+**Solution**
+
+```bash
+bandit11@bandit:~$ cat data.txt | tr abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM
+```
+
+**Explanation:**
+
+data.txt contains text encoded with ROT13, where every letter is shifted 13 places along the alphabet. tr swaps each character in the first set for the character in the same position in the second set, so a becomes n, b becomes o, and so on, wrapping round at z. Both the lowercase and uppercase alphabets are included so every letter gets rotated back. This reverses the encoding and reveals the password.
+
+**Password:** [GROozWPO8QyN0mGrjUkID0WCYkZiQxrN]
+
+**What I learned:**
+
+- tr translates characters. It needs two sets, a "from" set and a "to" set, and it maps them position by position.
+- tr doesn't take a filename. It only reads from standard input, so the file has to be piped in (cat data.txt | tr ...) or redirected (tr ... < data.txt).
+- My first working attempt only rotated lowercase letters, so "Ghe" came out half decoded. Adding the uppercase alphabet to both sets fixed it.
+- A cleaner way is to use ranges instead of typing out every letter: tr 'A-Za-z' 'N-ZA-Mn-za-m' < data.txt. It does exactly the same job, and the redirect removes the need for cat.
+- ROT13 is its own inverse. Running the same command again re-encodes the text, because rotating by 13 twice gets you back to the start (26 letters).

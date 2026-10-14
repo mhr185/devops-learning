@@ -299,7 +299,7 @@ The password for the next level is stored in the file data.txt and is the only l
 
 **Solution**
 ```bash
-bandit8@bandit:~$ cat data.txt | sort | uniq -u
+bandit8@bandit:~$ sort data.txt | uniq -u
 
 ```
 **Explanation:**
@@ -308,4 +308,27 @@ bandit8@bandit:~$ cat data.txt | sort | uniq -u
 
 **What I learned:**
 - first i tried cat data.txt | sort | uniq -c
-- I learnt to swap the -c for -u, as this will print lines that aren't repeated 
+- I learnt to swap the -c for -u, as this will print lines that aren't repeated
+
+## Bandit Level 9 → Level 10
+Level Goal
+The password for the next level is stored in the file data.txt in one of the few human-readable strings, preceded by several ‘=’ characters.
+
+**Solution:**
+```bash
+bandit9@bandit:~$ strings data.txt | grep -E '={3,}'
+```
+
+**Explanation:**
+
+data.txt is mostly binary data. strings pulls out only the human-readable text, and grep -E '={3,}' keeps the lines that contain three or more = signs in a row.
+
+**Password:** [B0s2khmbT9u0geKuOoVGW3JZKhndE3BG]
+
+**What I learned:**
+
+- First I tried grep '==========' data.txt -a. The -a flag makes grep treat a binary file as text, which found the password but printed lots of binary junk around it.
+strings extracts the readable text from a binary file, so piping it into grep gives clean output without needing -a.
+- Searching for a single = matched lots of random noise. Making the pattern stricter (== or more) filtered it down to just the lines I wanted. 
+- With grep -E (extended regex), {3,} means “3 or more of the previous character”. Other quantifiers: {3} means exactly 3, + means 1 or more, * means 0 or more, and ? means 0 or 1.
+

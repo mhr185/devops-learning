@@ -25,7 +25,7 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
 
 | Module | Status |
 |---|---|
-| Linux | ✅ Complete (OverTheWire Bandit and SadServers ongoing) |
+| Linux | ✅ Complete (SadServers ongoing) |
 | Bash | 🟡 In progress |
 | Git | ⚪ Not started |
 | Networking | ⚪ Not started |

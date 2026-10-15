@@ -43,9 +43,15 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
 
 ## Highlights
 
-**[OverTheWire Bandit write-ups](./linux/bandit)**: Levels 0 → 13 complete, each with the command I used, an explanation, and what I learned along the way, including my mistakes and how I fixed them. Covers:
+**[OverTheWire Bandit write-ups](./linux/bandit)**: Levels 0 → 20 complete, each with the command I used, an explanation, and what I learned along the way, including my mistakes and how I fixed them. Covers:
 
 - Searching and filtering text with grep, sort and uniq
 - Pulling readable text out of binary files with strings
 - Decoding base64 and ROT13
-- Reversing a hexdump and unpacking
+- Reversing a hexdump and unpacking a file through eight layers of gzip, bzip2 and tar
+- Logging in with SSH private keys, fixing key permissions, and copying files between machines with scp
+- Sending data to network services with nc, and scanning a port range to find which ones are open
+- Connecting to SSL/TLS services with openssl s_client and reading certificate details
+- Comparing files with diff to find exactly what changed
+- Getting around a broken .bashrc by running commands over ssh without an interactive shell
+- Understanding setuid permissions and how a program can run as another user

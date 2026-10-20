@@ -5,10 +5,10 @@
 Create a script that takes two numbers as input and performs basic arithmetic operations (addition, subtraction, multiplication, division).
 
 **Requirements:**
--Prompt user for two numbers
--Perform all four operations
--Display the results
--Handle division by zero
+- Prompt user for two numbers
+- Perform all four operations
+- Display the results
+- Handle division by zero
 
 **Example output:**
 
@@ -21,11 +21,11 @@ Results: 10 + 5 = 15 10 - 5 = 5 10 × 5 = 50 10 ÷ 5 = 2
 Create a script that automates directory and file creation.
 
 **Requirements:**
--Create a directory called bash_demo
--Navigate into the directory
--Create a file called demo.txt
--Write text to the file (include current date)
--Display the file contents
+- Create a directory called bash_demo
+- Navigate into the directory
+- Create a file called demo.txt
+- Write text to the file (include current date)
+- Display the file contents
 
 **Example output:**
 

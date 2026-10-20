@@ -13,7 +13,7 @@ Documenting my learning of Linux through CoderCo DevOps bootcamp.
 
 ## Progress
 
-- Bandit: Levels 0 → 13 complete
+- Bandit: Levels 0 → 20 completed and documented the solutions
 
 ## Skills covered so far
 
@@ -25,5 +25,4 @@ Documenting my learning of Linux through CoderCo DevOps bootcamp.
 
 ## Up next
 
-- Over the wire bandit game levels 14 onwards
 - SadServers

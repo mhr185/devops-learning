@@ -31,3 +31,34 @@ Create a script that automates directory and file creation.
 
 Directory 'bash_demo' created. File 'demo.txt' created.
 File contents: This file was created by a Bash script on 2024-11-29
+
+## Challenge 3: File Checker with Permissions
+
+Create a script that checks if a file exists and displays its permissions.
+
+**Requirements:**
+- Prompt user for a filename
+- Check if the file exists
+- If it exists, check if it's readable, writable, and executable
+- Display appropriate messages for each permission
+
+**Example output:**
+
+Enter filename to check: /etc/passwd
+File '/etc/passwd' exists. ✓ File is readable ✓ File is writable ✗ File is not executable
+
+## Challenge 4: Backup Script for Text Files
+
+Create a script that backs up all .txt files from one directory to another.
+
+**Requirements:**
+- Prompt user for source directory
+- Create a backup directory if it doesn't exist
+- Copy all .txt files to the backup directory
+- Add timestamp to backup directory name
+- Display count of files backed up
+
+**Example output:**
+Enter source directory: /home/user/documents
+Backup directory created: backup_2024-11-29_14-30 Copying .txt files...
+Backup complete! Files backed up: 

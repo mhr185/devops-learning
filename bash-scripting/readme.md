@@ -23,7 +23,11 @@ Results:
 10 × 5 = 50
 10 ÷ 5 = 2
 ```
+
+**My script running:**
  
+![Arithmetic calculator running in the terminal](images/arithematic-calculator-terminal.png)
+
 ## Challenge 2: File Operations Script
  
 Create a script that automates directory and file creation.
@@ -42,7 +46,11 @@ File 'demo.txt' created.
 File contents:
 This file was created by a Bash script on 2024-11-29
 ```
+
+**My script running:**
  
+![File operations script running in the terminal](images/file_ops-terminal.png)
+
 ## Challenge 3: File Checker with Permissions
  
 Create a script that checks if a file exists and displays its permissions.
@@ -59,6 +67,10 @@ Enter filename to check: /etc/passwd
 File '/etc/passwd' exists.
 ✓ File is readable ✓ File is writable ✗ File is not executable
 ```
+
+**My script running:**
+ 
+![File checker script running in the terminal](images/file_checker.png)
  
 ## Challenge 4: Backup Script for Text Files
  
@@ -77,7 +89,11 @@ Enter source directory: /home/user/Documents
 Backup directory created: backup_2024-11-29_14-30 Copying .txt files...
 Backup complete! Files backed up: 3
 ```
+
+**My script running:**
  
+![Backup script running in the terminal](images/backup_txt.png)
+
 ---
  
 ## Key Learnings

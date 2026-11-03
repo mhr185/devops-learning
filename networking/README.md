@@ -4,8 +4,6 @@
  
 A web server on AWS EC2 running NGINX, reachable from my own domain through Cloudflare DNS.
  
-**Live URL:** http://nginx.hamzahrashid.co.uk
- 
 ```
 Browser
    │  HTTPS (443)

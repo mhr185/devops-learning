@@ -4,13 +4,11 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
 
 ## About me
 
-🏥 I'm an Applications Support Engineer in the NHS, keeping clinical systems and EPR infrastructure running smoothly. When those systems go down, patient care feels it, so I take that seriously.
+- I'm an Applications Support Engineer in the NHS, keeping clinical systems and EPR infrastructure running smoothly. When those systems go down, patient care feels it, so I take that seriously.
 
-🏆 I started out as an apprentice on a council's SAP team and was named Digital and IT Apprentice of the Year 2023.
+- I started out as an apprentice on a council's SAP team and was named Digital and IT Apprentice of the Year 2023.
 
-🤖 I built Copilot agents that answer from our own technical documentation using RAG, so my team can troubleshoot faster and trust the answers.
-
-🐧 Running Linux home labs, self-hosting apps and automating anything that doesn't need a human is what pulled me towards DevOps. I want to build and automate the infrastructure, not just support it.
+- Running Linux home labs, self-hosting apps and automating anything that doesn't need a human is what pulled me towards DevOps. I want to build and automate the infrastructure, not just support it.
 
 
 ## Repo structure
@@ -34,7 +32,7 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
 
 | Module | Status |
 |---|---|
-| Docker | ⚪ Not started |
+| Docker | ⚪ Started |
 | AWS | ⚪ Not started |
 | Terraform | ⚪ Not started |
 | CI/CD | ⚪ Not started |

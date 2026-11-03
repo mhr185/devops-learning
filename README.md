@@ -26,9 +26,9 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
 | Module | Status |
 |---|---|
 | Linux | ✅ Complete (SadServers ongoing) |
-| Bash | 🟡 In progress |
-| Git | ⚪ Not started |
-| Networking | ⚪ Not started |
+| Bash | ✅ Complete |
+| Git | ✅ Complete |
+| Networking | ✅ Complete |
 
 ### Phase 2 – Applied DevOps
 

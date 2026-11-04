@@ -1,0 +1,11 @@
+services:
+  app:
+    build: .   #builds image from dockerfile in current directory
+    ports:
+      - "5000:5000"
+    depends_on:   # docker compose starts redis before app
+      - redis
+
+  redis:
+    image: redis:alpine
+    

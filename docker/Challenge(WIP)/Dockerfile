@@ -1,7 +1,12 @@
-FROM python:3.11-alpine
+FROM python:3.11-alpine AS build
 
 WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
 COPY . .
-RUN pip install flask
+
 EXPOSE 5000
 CMD ["python", "app.py"]

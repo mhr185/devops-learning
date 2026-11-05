@@ -18,5 +18,13 @@ def count():
     visits = r.incr('request_count')
     return f'Count of requests: {visits}'
 
+@app.route('/health')
+def health():
+    try:
+        r.ping()
+        return 'ok', 200
+    except redis.exceptions.ConnectionError:
+        return 'redis unavailable', 503
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

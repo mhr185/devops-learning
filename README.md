@@ -14,6 +14,7 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
 | [linux](./linux) | Linux notes and my OverTheWire Bandit write-ups |
 | [bash-scripting](./bash-scripting) | Bash scripts I built, with notes and example output |
 | [networking](./networking) | Networking notes and my domain + EC2 + DNS project |
+| [docker](./docker/Challenge/) | Multi-container Docker project: Flask app that counts visits in Redis, running as three replicas behind an NGINX load balancer, with health-checked startup  |
  
 ## Progress
  
@@ -30,7 +31,7 @@ My portfolio from the CoderCo DevOps bootcamp: notes, labs and projects as I wor
  
 | Module | Status |
 |---|---|
-| Docker | 🟡 In progress |
+| Docker | ✅ Complete |
 | AWS | ⚪ Not started |
 | Terraform | ⚪ Not started |
 | CI/CD | ⚪ Not started |

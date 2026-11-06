@@ -5,7 +5,7 @@ A multi-container Docker project: a Flask app that counts visits in Redis, runni
  
 As a personal touch, the visit count is shown in Eastern Arabic numerals (٠١٢٣٤٥٦٧٨٩), reflecting my Arabic studies.
  
-![Count page](images/count-page.png)
+![Arabic Counter Pro count page](images/count-page.png)
  
 ## Architecture
  
@@ -28,7 +28,10 @@ Browser ──► localhost:5000
         │    Redis    │  :6379, data on the redis_data named volume
         └─────────────┘
 ```
- 
+All five containers running, with only NGINX publishing a port:
+
+![docker compose ps](images/docker-compose-ps.png)
+
 All services share Compose's default network and reach each other by service name. Only NGINX publishes a port to the host.
  
 ## Features
@@ -90,10 +93,28 @@ Pointing to a file needs its own key, so I fixed it by putting `env_file: - .env
 - In compose.yaml, I mounted ./nginx.conf before I had created the file, resulting in an empty directory being created by Docker with that name. This meant saving to it failed with 'is a directory'. I removed the empty directory with rmdir and created the real file. 
 - Writing the commands for the health check, specifically the app container which comes with wget, I incorrectly used the syntax WGET instead of wget which resulted in a failed health check. Linux program names are case-sensitive. I reduced the intervals to 5s as this is closer to a normal container start up time, rather than 90s that I started with.
 - In the compose.yaml I wrote the app health check to send wget to localhost:5000/health which resulted in it resolving to the IPv6 loopback ::1 in the app container's /etc/hosts, (the container's resolver ranks it above 127.0.0.1). Flask only listens on IPv4. I then had to change it to 127.0.0.1.
- 
-## What I learned
- 
-
- 
+  
 ## Screenshots
  
+### Home page
+![Home page](images/home-page.png)
+
+### Load balancing
+NGINX sending requests to `app-1`, `app-2` and `app-3` in turn:
+
+![Round-robin requests in the app logs](images/nginx-round-robin.png)
+
+### Health checks
+All services healthy, with NGINX started only after the app replicas passed their checks:
+
+![All containers healthy](images/compose-ps-healthy.png)
+
+Stopping Redis to test failure:
+
+![Stopping Redis](images/compose-down-redis.png)
+
+After five failed checks, the app containers are marked unhealthy and `/health` returns 503:
+
+![App containers unhealthy](images/compose-ps-unhealthy.png)
+
+Once Redis is started again, the apps recover to healthy without being restarted.

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Arabic Counter Pro{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f1a2b;
+      --card: #16243a;
+      --gold: #d4a64a;
+      --text: #f3efe6;
+      --muted: #9aa7b8;
+      --line: #2a3b55;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--gold);
+      border-radius: 0 0 16px 16px;
+      padding: 48px 40px 40px;
+      text-align: center;
+    }
+    .arabic { font-family: "Amiri", serif; direction: rtl; }
+    .eyebrow { color: var(--gold); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; }
+    h1 { font-size: 36px; font-weight: 600; margin: 12px 0 6px; }
+    .arabic-title { font-size: 34px; color: var(--gold); margin-bottom: 20px; }
+    p { color: var(--muted); line-height: 1.6; }
+    .btn {
+      display: inline-block;
+      margin-top: 32px;
+      padding: 14px 32px;
+      background: var(--gold);
+      color: var(--bg);
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: transform 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .link { color: var(--muted); display: inline-block; margin-top: 18px; font-size: 14px; }
+    footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: ui-monospace, "DejaVu Sans Mono", monospace;
+    }
+    footer span { color: var(--gold); }
+    {% block extra_style %}{% endblock %}
+  </style>
+</head>
+<body>
+  <main class="card">
+    {% block content %}{% endblock %}
+  </main>
+  <footer>served by container <span>{{ container }}</span></footer>
+</body>
+</html>

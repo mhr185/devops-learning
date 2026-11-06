@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}{{ visits_arabic }} · Arabic Counter Pro{% endblock %}
+
+{% block extra_style %}
+  .number {
+    font-size: 120px;
+    line-height: 1.1;
+    color: var(--gold);
+    margin: 8px 0 4px;
+    animation: pop 0.4s ease-out;
+  }
+  .western { font-size: 18px; color: var(--muted); }
+  @keyframes pop {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .number { animation: none; }
+  }
+{% endblock %}
+
+{% block content %}
+  <div class="arabic arabic-title">عدد الزيارات</div>
+  <div class="eyebrow">Number of visits</div>
+  <div class="arabic number">{{ visits_arabic }}</div>
+  <div class="western">{{ visits }}</div>
+  <a class="btn" href="/count">Visit again</a>
+  <br>
+  <a class="link" href="/">Back to home</a>
+{% endblock %}

@@ -93,8 +93,7 @@ Pointing to a file needs its own key, so I fixed it by putting `env_file: - .env
  
 ## What I learned
  
-<!-- Your own words. -->
+
  
 ## Screenshots
  
-<!-- Add your own: home page, count page, docker compose ps showing (healthy), logs showing round-robin -->

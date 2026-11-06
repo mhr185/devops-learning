@@ -107,7 +107,7 @@ NGINX sending requests to `app-1`, `app-2` and `app-3` in turn:
 ### Health checks
 All services healthy, with NGINX started only after the app replicas passed their checks:
 
-![All containers healthy](images/compose-ps-healthy.png)
+![All containers healthy](images/docker-compose-ps.png)
 
 Stopping Redis to test failure:
 
@@ -118,3 +118,5 @@ After five failed checks, the app containers are marked unhealthy and `/health` 
 ![App containers unhealthy](images/compose-ps-unhealthy.png)
 
 Once Redis is started again, the apps recover to healthy without being restarted.
+
+![App containers healthy again](images/compose-ps-healthy.png)

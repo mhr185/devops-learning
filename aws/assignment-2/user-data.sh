@@ -16,7 +16,7 @@ get_metadata() {
 
 }
 
-INSTANCE_ID=i-01a4af77d81aae635 #$(get_metadata instance-id)
+INSTANCE_ID=$(get_metadata instance-id)
 PRIVATE_IP=$(get_metadata local-ipv4)
 AZ=$(get_metadata placement/availability-zone)
 

@@ -18,21 +18,13 @@ INSTANCE_ID=$(get_metadata instance-id)
 PRIVATE_IP=$(get_metadata local-ipv4)
 AZ=$(get_metadata placement/availability-zone)
 
-echo "Instance ID: $INSTANCE_ID"
-echo "Private IP: $PRIVATE_IP"
-echo "Availability Zone: $AZ"
-
 pick_word() {
     local checksum
     checksum=$(echo -n "$INSTANCE_ID" | cksum | cut -d' ' -f1)
-    #echo "Checksum: $checksum"
     local index
     index=$((checksum % ${#WORDS_AR[@]}))
-    #echo "Index: $index"
     WORD_AR=${WORDS_AR[$index]}
-    echo "Arabic Word: $WORD_AR"
     WORD_EN=${WORDS_EN[$index]}
-    echo "English Word: $WORD_EN"
 }
 pick_word
 
@@ -44,10 +36,18 @@ pick_accent() {
     else
         ACCENT="#9aa7b8"
     fi
-    echo "Accent: $ACCENT"
 }
 pick_accent
 
+log_values() {
+    echo "Instance ID=$INSTANCE_ID"
+    echo "Private IP=$PRIVATE_IP"
+    echo "Availability Zone=$AZ"
+    echo "Arabic Word=$WORD_AR"
+    echo "English Word=$WORD_EN"
+    echo "Accent=$ACCENT"
+}
+log_values
 
 #yum update -y
 #yum install -y httpd

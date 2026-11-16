@@ -49,8 +49,8 @@ The private instances need outbound internet access to install Apache and to rea
 ### 3. Security groups
 - **ALB SG:** HTTP 80 and HTTPS 443 from anywhere. The ALB is the only public entry point.
 - **EC2 SG:** HTTP 80 with **the ALB's security group as the source**, and nothing else. Even if someone knew an instance's address, the only thing allowed to talk to it is the ALB. It also keeps working when the ALB's IPs change, which a list of IP addresses wouldn't.
-![ALB security group](images/06a-alb-sg.png)
-![EC2 instances](images/06b-ec2-instances.png)
+![ALB security group](images/06-alb-sg.png)
+![EC2 instances](images/06-ec2-instances.png)
 ![EC2 security group](images/07-ec2-sg.png)
  
 ### 4. Access with SSM instead of SSH

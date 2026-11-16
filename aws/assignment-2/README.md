@@ -7,6 +7,13 @@ All the bonus tasks are done, plus a few extras:
 - **HTTPS:** an ACM certificate on an HTTPS:443 listener, with HTTP:80 redirecting to HTTPS
 - **Auto Scaling group:** replaces the hand-built instances, scales on CPU and heals itself
 - **Extras:** SSM Session Manager instead of SSH or a bastion, a regional NAT gateway, and a user data script that gives every instance its own Arabic-themed page, so the load balancing and scaling are visible in the browser
+
+**The final site:** each AZ shows its own word and accent colour.
+ 
+![Site served from eu-west-2a](images/26a-site-eu-west-2a.png)
+![Site served from eu-west-2b](images/26b-site-eu-west-2b.png)
+ 
+
 ## Architecture
  
 ![Architecture diagram](images/architecture.drawio.png)

@@ -35,6 +35,41 @@ All the bonus tasks are done, plus a few extras:
 | DNS | Cloudflare (hamzahrashid.co.uk) delegates `aws.` to Route 53. ALIAS A record at the zone apex → ALB |
 | Certificate | ACM, aws.hamzahrashid.co.uk, DNS-validated, RSA 2048 |
 | Auto Scaling | web-server-scaling, launch template web-server, min 2 / desired 2 / max 4, target tracking at 50% average CPU, SNS email notifications |
+
+## Challenges and how I solved them
+ 
+| Problem | Cause | Fix |
+|---|---|---|
+| No CloudWatch alarms for the scaling policy | Going back to edit the group size in the ASG wizard reset the scaling policy option, so the policy was never created | Created the target tracking policy from the ASG's *Automatic scaling* tab. Its alarms then appeared |
+| Load test didn't trigger scaling | One `yes` process uses one of the t3.micro's two vCPUs, so each instance sat at about 50%, exactly on the target | Ran two `yes` processes per instance; `top`'s *idle* figure showed the whole machine was busy |
+| No scaling emails | I'd never confirmed the SNS subscription | Confirmed it; SNS doesn't deliver until the endpoint is confirmed |
+| Health checks would have failed | User data wrote to `/var/http/html` instead of `/var/www/html`. Apache then serves its default page with a **403**, and the ALB marks the target unhealthy | Corrected the path, and confirmed it with `grep DocumentRoot /etc/httpd/conf/httpd.conf` |
+| AZ showed as `eu-west-2` | I'd read `placement/region` instead of `placement/availability-zone` | Listed `placement/` to see what's there, then used the AZ path |
+| Word variables empty or wrong | `WORD_AR=$(pick_word)` captured everything the function printed, and `$(...)` runs in a subshell, so the variables set inside it were lost | Called `pick_word` plainly so it sets the globals. `$(...)` is only for functions that print a single value |
+| Arabic garbled in the launch template | Uploading the script with *Choose file* read the UTF-8 file as Latin-1 | Pasted the script into the user data field instead, and checked `/var/lib/cloud/instance/user-data.txt` on a new instance |
+| `dig` not found | The package is called `bind9-dnsutils`, not `dig` | `sudo apt install bind9-dnsutils` |
+| ACM certificate name | The certificate has to match the exact hostname users visit | Requested it for the zone apex, `aws.hamzahrashid.co.uk`, which is the name the ALIAS record uses |
+ 
+## What I learnt
+
+- **ALB:** An ALB is AWS managed. You select a public subnet in each AZ, and AWS runs a node in each one. This makes it highly available.
+- **Security group references:** The EC2 instances only allow inbound HTTP from the ALB's security group. This follows the least-privilege model, and means the only way to reach the instances is through the ALB.
+- **TLS termination:** The ALB decrypts HTTPS, so the instances only deal with HTTP. That simplifies the instances, but the last hop inside the VPC isn't encrypted.
+- **DNS delegation:** Lets one provider hand a subdomain to another using NS records. An ALIAS is Route 53's answer to "a CNAME at the zone apex".
+- **SSM:** Implementing SSM meant there was no need for SSH, key pairs or a bastion host. Access is controlled through an IAM role instead.
+- **IMDSv2:** Using IMDSv2 helped me understand the `curl` command and HTTP requests. A PUT request gets a session token, then GET requests send that token in a header to read the instance's metadata. I've commented these steps in my user data script.
+- **Bash functions:** Use `$(...)` to get a single printed value, call the function plainly when it sets several globals, and use `local` for working variables.
+- **Auto Scaling:** Target tracking scales on the *group average*, scaling in is deliberately slower than scaling out, the maximum caps the group, and ELB health checks let the ASG replace instances that are running but broken. Any scaling activity was notified to me through SNS email.
+- **Instance refresh:** A rolling deployment: new versions go out one instance at a time, with no downtime. I used this when updating my launch template with my new user data script.
+
+## Trade-offs and what I'd do in production
+ 
+- **Encryption in transit:** traffic from the ALB to the instances is plain HTTP inside the VPC. For regulated data (for example, patient data in an NHS system), I'd use end-to-end TLS: an HTTPS target group, with certificates on the instances.
+- **Scaling speed:** basic monitoring (5-minute metrics) took over 10 minutes to trigger scaling. Detailed monitoring (1-minute metrics) reacts much faster, at a small cost.
+- **ALB outbound rule:** the ALB SG still has the default "allow all" outbound rule. Tightening it to HTTP 80 to the EC2 SG only would be stricter.
+- **Fully private AWS access:** SSM and package installs go out through the NAT gateway. VPC interface endpoints for SSM, plus an S3 gateway endpoint, would remove the need for internet access entirely.
+- **Infrastructure as code:** everything here was built by hand in the console. In Terraform it would be reviewable, repeatable and easy to tear down, which is the next module.
+- **Cost:** the ALB, NAT gateway and public IPv4 addresses are billed hourly even with no traffic, and the Route 53 hosted zone costs a monthly fee.
  
 ## What I built
  
@@ -164,41 +199,6 @@ The words come from my Arabic classes: نَصَرَ (to help), كَانَ (to be
  
 ![Launch template versions](images/24-launch-template-versions.png)
 ![Instance refresh successful](images/25-instance-refresh-successful.png)
- 
-## Challenges and how I solved them
- 
-| Problem | Cause | Fix |
-|---|---|---|
-| No CloudWatch alarms for the scaling policy | Going back to edit the group size in the ASG wizard reset the scaling policy option, so the policy was never created | Created the target tracking policy from the ASG's *Automatic scaling* tab. Its alarms then appeared |
-| Load test didn't trigger scaling | One `yes` process uses one of the t3.micro's two vCPUs, so each instance sat at about 50%, exactly on the target | Ran two `yes` processes per instance; `top`'s *idle* figure showed the whole machine was busy |
-| No scaling emails | I'd never confirmed the SNS subscription | Confirmed it; SNS doesn't deliver until the endpoint is confirmed |
-| Health checks would have failed | User data wrote to `/var/http/html` instead of `/var/www/html`. Apache then serves its default page with a **403**, and the ALB marks the target unhealthy | Corrected the path, and confirmed it with `grep DocumentRoot /etc/httpd/conf/httpd.conf` |
-| AZ showed as `eu-west-2` | I'd read `placement/region` instead of `placement/availability-zone` | Listed `placement/` to see what's there, then used the AZ path |
-| Word variables empty or wrong | `WORD_AR=$(pick_word)` captured everything the function printed, and `$(...)` runs in a subshell, so the variables set inside it were lost | Called `pick_word` plainly so it sets the globals. `$(...)` is only for functions that print a single value |
-| Arabic garbled in the launch template | Uploading the script with *Choose file* read the UTF-8 file as Latin-1 | Pasted the script into the user data field instead, and checked `/var/lib/cloud/instance/user-data.txt` on a new instance |
-| `dig` not found | The package is called `bind9-dnsutils`, not `dig` | `sudo apt install bind9-dnsutils` |
-| ACM certificate name | The certificate has to match the exact hostname users visit | Requested it for the zone apex, `aws.hamzahrashid.co.uk`, which is the name the ALIAS record uses |
- 
-## What I learnt
-
-- **ALB:** An ALB is AWS managed. You select a public subnet in each AZ, and AWS runs a node in each one. This makes it highly available.
-- **Security group references:** The EC2 instances only allow inbound HTTP from the ALB's security group. This follows the least-privilege model, and means the only way to reach the instances is through the ALB.
-- **TLS termination:** The ALB decrypts HTTPS, so the instances only deal with HTTP. That simplifies the instances, but the last hop inside the VPC isn't encrypted.
-- **DNS delegation:** Lets one provider hand a subdomain to another using NS records. An ALIAS is Route 53's answer to "a CNAME at the zone apex".
-- **SSM:** Implementing SSM meant there was no need for SSH, key pairs or a bastion host. Access is controlled through an IAM role instead.
-- **IMDSv2:** Using IMDSv2 helped me understand the `curl` command and HTTP requests. A PUT request gets a session token, then GET requests send that token in a header to read the instance's metadata. I've commented these steps in my user data script.
-- **Bash functions:** Use `$(...)` to get a single printed value, call the function plainly when it sets several globals, and use `local` for working variables.
-- **Auto Scaling:** Target tracking scales on the *group average*, scaling in is deliberately slower than scaling out, the maximum caps the group, and ELB health checks let the ASG replace instances that are running but broken. Any scaling activity was notified to me through SNS email.
-- **Instance refresh:** A rolling deployment: new versions go out one instance at a time, with no downtime. I used this when updating my launch template with my new user data script.
-
-## Trade-offs and what I'd do in production
- 
-- **Encryption in transit:** traffic from the ALB to the instances is plain HTTP inside the VPC. For regulated data (for example, patient data in an NHS system), I'd use end-to-end TLS: an HTTPS target group, with certificates on the instances.
-- **Scaling speed:** basic monitoring (5-minute metrics) took over 10 minutes to trigger scaling. Detailed monitoring (1-minute metrics) reacts much faster, at a small cost.
-- **ALB outbound rule:** the ALB SG still has the default "allow all" outbound rule. Tightening it to HTTP 80 to the EC2 SG only would be stricter.
-- **Fully private AWS access:** SSM and package installs go out through the NAT gateway. VPC interface endpoints for SSM, plus an S3 gateway endpoint, would remove the need for internet access entirely.
-- **Infrastructure as code:** everything here was built by hand in the console. In Terraform it would be reviewable, repeatable and easy to tear down, which is the next module.
-- **Cost:** the ALB, NAT gateway and public IPv4 addresses are billed hourly even with no traffic, and the Route 53 hosted zone costs a monthly fee.
 
 ## Clean-up
  

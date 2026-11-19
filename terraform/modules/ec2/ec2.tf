@@ -4,7 +4,7 @@ resource "aws_instance" "this" {
 
 }
 resource "aws_instance" "import" {
-  ami                     = "ami-0639df93102b03fec"
+  ami                     = local.instance_ami
   instance_type           = var.instance_type
   tags = {
     Name = "terraform-import"

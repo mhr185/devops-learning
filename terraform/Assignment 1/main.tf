@@ -57,14 +57,43 @@ resource "aws_route_table_association" "terraform_route_table_association" {
   route_table_id = aws_route_table.terraform_route_table.id
 }
 
+resource "aws_security_group" "allow_http" {
+  name        = "allow_http"
+  description = "Allow HTTP inbound traffic and all outbound traffic"
+  vpc_id      = aws_vpc.terraform_vpc.id
+
+  tags = {
+    Name = "allow_http_sg"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv4" {
+  security_group_id = aws_security_group.allow_http.id
+  cidr_ipv4         = aws_vpc.terraform_vpc.cidr_block
+  from_port         = 80
+  ip_protocol       = "tcp"
+  to_port           = 80
+}
+
+
+resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
+  security_group_id = aws_security_group.allow_http.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
+}
+
+
+
 
 resource "aws_instance" "wordpress" {
   ami           = "ami-05855828e1e2be542"
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.terraform_pub_subnet.id
+  vpc_security_group_ids = [aws_security_group.allow_http.id]
+  associate_public_ip_address = true
   tags = {
     Name = "Assignment 1"
   }
-  depends_on = [aws_internet_gateway.terraform_gw]
+  depends_on = [aws_vpc_security_group_ingress_rule.allow_http_ipv4, aws_vpc_security_group_egress_rule.allow_all_traffic_ipv4]
 }
 

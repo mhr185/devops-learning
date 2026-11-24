@@ -22,7 +22,7 @@ resource "aws_vpc" "terraform_vpc" {
 }
 
 resource "aws_internet_gateway" "terraform_gw" {
-  vpc_id = aws_vpc.terraform_vpc.id
+  vpc_id     = aws_vpc.terraform_vpc.id
   depends_on = [aws_vpc.terraform_vpc]
   tags = {
     Name = "Assignment 1 Internet Gateway"
@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "terraform_gw" {
 }
 
 resource "aws_route_table" "terraform_route_table" {
-  vpc_id = aws_vpc.terraform_vpc.id
+  vpc_id     = aws_vpc.terraform_vpc.id
   depends_on = [aws_internet_gateway.terraform_gw]
   route {
     cidr_block = "0.0.0.0/0"
@@ -83,13 +83,34 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
 }
 
 
+data "aws_iam_policy_document" "assume_role" {
+  statement {
+    effect = "Allow"
 
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "terraform_ssm_role" {
+  name               = "terraform_ssm_role"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
+  role       = aws_iam_role.terraform_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
 
 resource "aws_instance" "wordpress" {
-  ami           = "ami-05855828e1e2be542"
-  instance_type = "t3.micro"
-  subnet_id     = aws_subnet.terraform_pub_subnet.id
-  vpc_security_group_ids = [aws_security_group.allow_http.id]
+  ami                         = "ami-05855828e1e2be542"
+  instance_type               = "t3.micro"
+  subnet_id                   = aws_subnet.terraform_pub_subnet.id
+  vpc_security_group_ids      = [aws_security_group.allow_http.id]
   associate_public_ip_address = true
   tags = {
     Name = "Assignment 1"

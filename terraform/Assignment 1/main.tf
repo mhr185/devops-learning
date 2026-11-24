@@ -106,15 +106,21 @@ resource "aws_iam_role_policy_attachment" "ssm_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+resource "aws_iam_instance_profile" "terraform_ssm_instance_profile" {
+  name = "terraform_ssm_instance_profile"
+  role = aws_iam_role.terraform_ssm_role.name
+}
+
 resource "aws_instance" "wordpress" {
   ami                         = "ami-05855828e1e2be542"
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.terraform_pub_subnet.id
   vpc_security_group_ids      = [aws_security_group.allow_http.id]
+  iam_instance_profile        = aws_iam_instance_profile.terraform_ssm_instance_profile.name
   associate_public_ip_address = true
   tags = {
     Name = "Assignment 1"
   }
-  depends_on = [aws_vpc_security_group_ingress_rule.allow_http_ipv4, aws_vpc_security_group_egress_rule.allow_all_traffic_ipv4]
+
 }
 

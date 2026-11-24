@@ -118,6 +118,7 @@ resource "aws_instance" "wordpress" {
   vpc_security_group_ids      = [aws_security_group.allow_http.id]
   iam_instance_profile        = aws_iam_instance_profile.terraform_ssm_instance_profile.name
   associate_public_ip_address = true
+  # user_data                   = file("user_data.sh")
   tags = {
     Name = "Assignment 1"
   }

@@ -3,3 +3,9 @@ variable "my_public_ip" {
   type        = string
   sensitive   = true
 }
+
+variable "instance_type" {
+  description = "The type of EC2 instance to create."
+  type        = string
+  default     = "t3.micro"
+}

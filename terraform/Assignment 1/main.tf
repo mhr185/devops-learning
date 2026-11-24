@@ -113,7 +113,7 @@ resource "aws_iam_instance_profile" "terraform_ssm_instance_profile" {
 
 resource "aws_instance" "wordpress" {
   ami                         = "ami-05855828e1e2be542"
-  instance_type               = "t3.micro"
+  instance_type               = var.instance_type
   subnet_id                   = aws_subnet.terraform_pub_subnet.id
   vpc_security_group_ids      = [aws_security_group.allow_http.id]
   iam_instance_profile        = aws_iam_instance_profile.terraform_ssm_instance_profile.name

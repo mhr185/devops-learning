@@ -118,10 +118,15 @@ resource "aws_instance" "wordpress" {
   vpc_security_group_ids      = [aws_security_group.allow_http.id]
   iam_instance_profile        = aws_iam_instance_profile.terraform_ssm_instance_profile.name
   associate_public_ip_address = true
-  # user_data                   = file("user_data.sh")
+user_data = templatefile("${path.module}/templates/user_data.sh.tftpl", {
+  db_name          = var.db_name
+  db_user          = var.db_user
+  db_password      = var.db_password
+  db_root_password = var.db_root_password
+})
+user_data_replace_on_change = true
   tags = {
     Name = "Assignment 1"
   }
-
 }
 

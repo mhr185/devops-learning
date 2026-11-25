@@ -1,0 +1,58 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+dnf upgrade -y
+dnf install -y httpd wget php-fpm php-mysqli php-json php php-devel
+dnf install -y mariadb105-server
+systemctl start httpd
+systemctl enable httpd
+
+ 
+# Start MariaDB now and on every boot
+systemctl enable --now mariadb
+
+mysql <<'SQL'
+-- 1. Set root password (keeps unix_socket so root on the box can still log in)
+ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('${db_root_password}') OR unix_socket;
+
+-- 2. Remove anonymous users
+DELETE FROM mysql.global_priv WHERE User='';
+
+-- 3. Disable remote root login
+DELETE FROM mysql.global_priv WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
+
+-- 4. Remove test database and its privileges
+DROP DATABASE IF EXISTS test;
+DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';
+
+-- WordPress database and user
+CREATE DATABASE IF NOT EXISTS ${db_name};
+CREATE USER IF NOT EXISTS '${db_user}'@'localhost' IDENTIFIED BY '${db_password}';
+GRANT ALL PRIVILEGES ON ${db_name}.* TO '${db_user}'@'localhost';
+
+-- 5. Reload privilege tables
+FLUSH PRIVILEGES;
+SQL
+
+cd /tmp
+wget https://wordpress.org/latest.tar.gz
+tar -xzvf latest.tar.gz
+
+cp -r wordpress/* /var/www/html
+
+cd /var/www/html
+cp wp-config-sample.php wp-config.php
+
+# Database settings
+sed -i "s/database_name_here/${db_name}/" wp-config.php
+sed -i "s/username_here/${db_user}/" wp-config.php
+sed -i "s/password_here/${db_password}/" wp-config.php
+# DB_HOST is already 'localhost' in the sample, so nothing to change
+chown -R apache:apache /var/www
+
+# Unique salts, fresh for every build
+#curl -s https://api.wordpress.org/secret-key/1.1/salt/ > /tmp/wp-salts
+#sed -i "/put your unique phrase here/d" wp-config.php
+#sed -i "/Add any custom values/r /tmp/wp-salts" wp-config.php
+#rm /tmp/wp-salts

@@ -17,9 +17,6 @@ module "network" {
   my_public_ip = var.my_public_ip
 }
 
-
-
-
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
@@ -68,41 +65,4 @@ user_data_replace_on_change = true
   tags = {
     Name = "Assignment 1"
   }
-}
-
-moved {
-  from = aws_vpc.terraform_vpc
-  to = module.network.aws_vpc.terraform_vpc
-}
-
-moved {
-  from = aws_subnet.terraform_pub_subnet
-  to = module.network.aws_subnet.terraform_pub_subnet
-}
-
-moved {
-  from = aws_security_group.allow_http
-  to = module.network.aws_security_group.allow_http
-}
-
-moved {
-  from = aws_route_table.terraform_route_table
-  to = module.network.aws_route_table.terraform_route_table
-}
-
-moved {
-  from = aws_route_table_association.terraform_route_table_association
-  to = module.network.aws_route_table_association.terraform_route_table_association
-}
-moved {
-  from = aws_internet_gateway.terraform_gw
-  to = module.network.aws_internet_gateway.terraform_gw
-}
-moved {
-  from = aws_vpc_security_group_ingress_rule.allow_http_ipv4
-  to = module.network.aws_vpc_security_group_ingress_rule.allow_http_ipv4
-}
-moved {
-  from = aws_vpc_security_group_egress_rule.allow_all_traffic_ipv4
-  to = module.network.aws_vpc_security_group_egress_rule.allow_all_traffic_ipv4
 }

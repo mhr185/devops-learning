@@ -123,6 +123,9 @@ user_data = templatefile("${path.module}/templates/user_data.sh.tftpl", {
   db_user          = var.db_user
   db_password      = var.db_password
   db_root_password = var.db_root_password
+  wp_admin_user    = var.wp_admin_user
+  wp_admin_password = var.wp_admin_password
+  wp_admin_email   = var.wp_admin_email
 })
 user_data_replace_on_change = true
   tags = {

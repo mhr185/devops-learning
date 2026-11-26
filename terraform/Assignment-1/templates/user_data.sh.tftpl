@@ -10,13 +10,13 @@ chmod +x wp-cli.phar
 mv wp-cli.phar /usr/local/bin/wp
 systemctl start httpd
 systemctl enable httpd
-
+# Start MariaDB now and on every boot
+systemctl enable --now mariadb
 
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 300")
 PUBLIC_IPV4=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/public-ipv4")
 
-# Start MariaDB now and on every boot
-systemctl enable --now mariadb
+
 
 mysql <<'SQL'
 -- 1. Set root password (keeps unix_socket so root on the box can still log in)
@@ -57,8 +57,14 @@ sed -i "s/password_here/${db_password}/" wp-config.php
 # DB_HOST is already 'localhost' in the sample, so nothing to change
 chown -R apache:apache /var/www
 sudo -u apache wp core install --url=http://$PUBLIC_IPV4 --title="Assignment 1" --admin_user=${wp_admin_user} --admin_password=${wp_admin_password} --admin_email=${wp_admin_email}
+sudo -u apache wp theme install astra --activate
+# Replace the default "Hello world!" post with a project write-up
+sudo -u apache wp post update 1 \
+  --post_title="Terraform Assignment 1" \
+  --post_content="Welcome to the public endpoint for my Terraform Assignment 1. This WordPress instance has been provisioned using Terraform to manage the infrastructure, including the VPC, security groups, IAM roles and the EC2 instance."
 
-
+# Clean URLs instead of ?p=123
+sudo -u apache wp rewrite structure '/%postname%/'
 
 # Unique salts, fresh for every build
 #curl -s https://api.wordpress.org/secret-key/1.1/salt/ > /tmp/wp-salts

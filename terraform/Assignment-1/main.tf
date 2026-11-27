@@ -43,17 +43,3 @@ user_data_replace_on_change = true
   }
 }
 
-moved {
-    from = aws_iam_instance_profile.terraform_ssm_instance_profile
-    to   = module.iam.aws_iam_instance_profile.terraform_ssm_instance_profile
-}
-
-moved {
-    from = aws_iam_role.terraform_ssm_role
-    to   = module.iam.aws_iam_role.terraform_ssm_role
-}
-
-moved {
-    from = aws_iam_role_policy_attachment.ssm_policy_attachment
-    to   = module.iam.aws_iam_role_policy_attachment.ssm_policy_attachment
-}

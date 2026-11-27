@@ -3,6 +3,12 @@ variable "instance_type" {
   type        = string
 }
 
+variable "ami_id" {
+  description = "The ID of the AMI to use for the EC2 instance."
+  type        = string
+  default     = "ami-05855828e1e2be542"
+}
+
 variable "db_name" {
   description = "WordPress database name"
   type        = string

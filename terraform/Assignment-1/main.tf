@@ -35,8 +35,3 @@ module "ec2" {
   security_group_id = module.network.security_group_id
   instance_profile_id = module.iam.instance_profile_id
 }
-
-moved {
-  from = aws_instance.wordpress
-  to = module.ec2.aws_instance.wordpress
-}
